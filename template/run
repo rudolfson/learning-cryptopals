@@ -1,0 +1,1 @@
+docker build -t a-tour-of-go/flowcontrol . && docker run --rm a-tour-of-go/flowcontrol $1
