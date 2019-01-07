@@ -1,0 +1,3 @@
+= Learning crypto by exercices
+My attempt in learning crypto by going through the exercises on
+https://cryptopals.com/
