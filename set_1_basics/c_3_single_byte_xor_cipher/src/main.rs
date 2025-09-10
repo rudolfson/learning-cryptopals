@@ -1,7 +1,4 @@
-use std::{
-    ops::{Div, Mul},
-    string::FromUtf8Error,
-};
+use std::{ops::Div, string::FromUtf8Error};
 
 ///
 /// a ^ 0 = 0 → a = 0
