@@ -1,8 +1,8 @@
 [package]
-name = "c_1_hex_to_base64"
+name = "learning-cryptopals"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-base64 = "0.22.1"
-hex = "0.4.3"
+hex = "*"
+base64 = "*"
