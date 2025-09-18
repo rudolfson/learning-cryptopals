@@ -34,3 +34,60 @@ pub fn brute_force_single_byte_xor_cipher(encrypted: &[u8]) -> Option<(u8, Vec<u
         _ => Some((found_key, found_result, min_score)),
     }
 }
+
+pub fn repeating_key_xor(text: &str, key: &mut RepeatingKey) -> String {
+    let xored: Vec<u8> = text.asciibytes().map(|b| b ^ key.next_key()).collect();
+    hex::encode(xored)
+}
+
+pub struct RepeatingKey {
+    current_idx: usize,
+    key: Vec<u8>,
+}
+
+impl RepeatingKey {
+    pub fn from(key: &str) -> Self {
+        Self {
+            current_idx: 0,
+            key: key.bytes().collect(),
+        }
+    }
+
+    pub fn next_key(&mut self) -> u8 {
+        let result = self.key[self.current_idx];
+        self.current_idx += 1;
+        if self.current_idx >= self.key.len() {
+            self.current_idx = 0;
+        }
+        result
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use crate::common::xor::repeating_key_xor;
+
+    use super::RepeatingKey;
+
+    #[test]
+    fn repeating_key() {
+        let mut rk = RepeatingKey::from("ABC");
+        assert_eq!(rk.next_key(), b'A');
+        assert_eq!(rk.next_key(), b'B');
+        assert_eq!(rk.next_key(), b'C');
+        assert_eq!(rk.next_key(), b'A');
+        assert_eq!(rk.next_key(), b'B');
+        assert_eq!(rk.current_idx, 2);
+    }
+
+    #[test]
+    fn test_repeating_key_xor() {
+        assert_eq!(
+            repeating_key_xor(
+                "Burning 'em, if you ain't quick and nimble",
+                &mut RepeatingKey::from("ICE")
+            ),
+            "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272"
+        );
+    }
+}

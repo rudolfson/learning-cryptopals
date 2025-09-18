@@ -40,7 +40,7 @@ pub fn challenge3() {
 }
 
 pub fn challenge4() {
-    println!("Running challenge 4 {}", f32::MAX);
+    println!("Running challenge 4");
     let content = read_to_string("data/set1challenge4.txt").expect("could not read file");
     let mut min_score = f32::MAX;
     let mut found: Vec<u8> = vec![];
@@ -60,4 +60,8 @@ pub fn challenge4() {
         "Found message: {}",
         String::from_utf8_lossy(&found).into_owned()
     );
+}
+
+pub fn challenge5() {
+    println!("Running challenge 5");
 }
