@@ -1,3 +1,5 @@
+use std::fs::read_to_string;
+
 use base64::{Engine, prelude::BASE64_STANDARD_NO_PAD};
 
 use crate::common::{self, xor::brute_force_single_byte_xor_cipher};
@@ -35,4 +37,27 @@ pub fn challenge3() {
         ),
         None => println!("something went wrong"),
     }
+}
+
+pub fn challenge4() {
+    println!("Running challenge 4 {}", f32::MAX);
+    let content = read_to_string("data/set1challenge4.txt").expect("could not read file");
+    let mut min_score = f32::MAX;
+    let mut found: Vec<u8> = vec![];
+    for line in content.lines() {
+        let data = hex::decode(line).expect("could not convert hex string to bytes");
+        match brute_force_single_byte_xor_cipher(&data) {
+            Some((_key, decrypted, score)) => {
+                if score < min_score {
+                    min_score = score;
+                    found = decrypted;
+                }
+            }
+            None => println!("something went wrong"),
+        }
+    }
+    println!(
+        "Found message: {}",
+        String::from_utf8_lossy(&found).into_owned()
+    );
 }
