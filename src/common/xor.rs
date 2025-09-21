@@ -36,7 +36,7 @@ pub fn brute_force_single_byte_xor_cipher(encrypted: &[u8]) -> Option<(u8, Vec<u
 }
 
 pub fn repeating_key_xor(text: &str, key: &mut RepeatingKey) -> String {
-    let xored: Vec<u8> = text.asciibytes().map(|b| b ^ key.next_key()).collect();
+    let xored: Vec<u8> = text.bytes().map(|b| b ^ key.next_key()).collect();
     hex::encode(xored)
 }
 
@@ -65,6 +65,8 @@ impl RepeatingKey {
 
 #[cfg(test)]
 mod test {
+    use base64::{Engine, prelude::BASE64_STANDARD_NO_PAD};
+
     use crate::common::xor::repeating_key_xor;
 
     use super::RepeatingKey;
@@ -82,12 +84,14 @@ mod test {
 
     #[test]
     fn test_repeating_key_xor() {
+        let text = "Burning 'em, if you ain't quick and nimble
+I go crazy when I hear a cymbal";
+        let mut key = RepeatingKey::from("ICE");
+        let result = repeating_key_xor(text, &mut key);
+
         assert_eq!(
-            repeating_key_xor(
-                "Burning 'em, if you ain't quick and nimble",
-                &mut RepeatingKey::from("ICE")
-            ),
-            "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272"
+            result,
+            "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f"
         );
     }
 }

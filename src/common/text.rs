@@ -50,14 +50,51 @@ fn get_expected_frequency(c: u8) -> f32 {
     }
 }
 
+fn hamming_distance(a: &[u8], b: &[u8]) -> u32 {
+    assert_eq!(a.len(), b.len());
+    a.iter()
+        .zip(b.iter())
+        .map(|(a, b)| a ^ b)
+        .map(|x| x.count_ones())
+        .sum()
+}
+const MAX_KEYSIZE: usize = 40;
+pub fn find_key_sizes(encrypted: &[u8]) -> Vec<usize> {
+    assert!(encrypted.len() >= 4, "need at least 4 bytes to do this");
+    let max_keysize = MAX_KEYSIZE.min(encrypted.len() / 2);
+    let mut distances: Vec<(usize, f64)> = (2..=max_keysize)
+        .map(|keysize| {
+            (
+                keysize,
+                encrypted[0..keysize].to_vec(),
+                encrypted[keysize..(2 * keysize)].to_vec(),
+            )
+        })
+        .map(|(keysize, a, b)| (keysize, hamming_distance(&a, &b) as f64))
+        .map(|(keysize, distance)| (keysize, distance / (keysize as f64)))
+        .collect();
+    distances.sort_by(|a, b| a.1.partial_cmp(&b.1).expect("could not compare"));
+
+    todo!();
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
+
     #[test]
     fn test_score() {
         assert!(
             score_englishness("my name is bob".as_bytes())
                 < score_englishness("awo02h4fobsdfdb".as_bytes())
         )
+    }
+
+    #[test]
+    fn test_hamming_distance() {
+        assert_eq!(
+            hamming_distance("this is a test".as_bytes(), "wokka wokka!!!".as_bytes()),
+            37
+        );
     }
 }

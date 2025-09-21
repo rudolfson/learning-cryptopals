@@ -2,7 +2,10 @@ use std::fs::read_to_string;
 
 use base64::{Engine, prelude::BASE64_STANDARD_NO_PAD};
 
-use crate::common::{self, xor::brute_force_single_byte_xor_cipher};
+use crate::common::{
+    self,
+    xor::{self, RepeatingKey, brute_force_single_byte_xor_cipher},
+};
 
 pub fn challenge1() {
     println!("Running challenge 1");
@@ -64,4 +67,15 @@ pub fn challenge4() {
 
 pub fn challenge5() {
     println!("Running challenge 5");
+    let text = "Burning 'em, if you ain't quick and nimble
+I go crazy when I hear a cymbal";
+    let mut key = RepeatingKey::from("ICE");
+    let result = xor::repeating_key_xor(text, &mut key);
+
+    assert_eq!(
+        result,
+        "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f"
+    )
 }
+
+pub fn challange8() {}
