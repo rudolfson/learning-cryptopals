@@ -78,4 +78,4 @@ I go crazy when I hear a cymbal";
     )
 }
 
-pub fn challange8() {}
+pub fn challenge6() {}

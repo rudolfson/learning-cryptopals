@@ -65,8 +65,6 @@ impl RepeatingKey {
 
 #[cfg(test)]
 mod test {
-    use base64::{Engine, prelude::BASE64_STANDARD_NO_PAD};
-
     use crate::common::xor::repeating_key_xor;
 
     use super::RepeatingKey;

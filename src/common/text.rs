@@ -74,8 +74,25 @@ pub fn find_key_sizes(encrypted: &[u8]) -> Vec<usize> {
         .map(|(keysize, distance)| (keysize, distance / (keysize as f64)))
         .collect();
     distances.sort_by(|a, b| a.1.partial_cmp(&b.1).expect("could not compare"));
+    distances
+        .into_iter()
+        .take(3)
+        .map(|(keysize, _distance)| keysize)
+        .collect()
+}
 
+pub fn break_repeating_key_xor() {
     todo!();
+}
+
+fn split_into_blocks(source: &[u8], block_size: usize) -> Vec<Vec<u8>> {
+    let mut blocks: Vec<Vec<u8>> = vec![];
+    (0..block_size).for_each(|_| blocks.push(vec![]));
+    source
+        .iter()
+        .enumerate()
+        .for_each(|(idx, byte)| blocks[idx % block_size].push(*byte));
+    blocks
 }
 
 #[cfg(test)]
@@ -95,6 +112,35 @@ mod test {
         assert_eq!(
             hamming_distance("this is a test".as_bytes(), "wokka wokka!!!".as_bytes()),
             37
+        );
+    }
+
+    #[test]
+    fn test_split_into_blocks() {
+        let input: Vec<u8> = (1..=15).collect();
+        assert_eq!(
+            split_into_blocks(&input, 2),
+            vec![
+                vec![1, 3, 5, 7, 9, 11, 13, 15],
+                vec![2, 4, 6, 8, 10, 12, 14],
+            ]
+        );
+        assert_eq!(
+            split_into_blocks(&input, 3),
+            vec![
+                vec![1, 4, 7, 10, 13],
+                vec![2, 5, 8, 11, 14],
+                vec![3, 6, 9, 12, 15],
+            ]
+        );
+        assert_eq!(
+            split_into_blocks(&input, 4),
+            vec![
+                vec![1, 5, 9, 13],
+                vec![2, 6, 10, 14],
+                vec![3, 7, 11, 15],
+                vec![4, 8, 12],
+            ]
         );
     }
 }
